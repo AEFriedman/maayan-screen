@@ -127,7 +127,7 @@
   }
 
   #photo-panel {
-    flex: 1.2;
+    flex: 3;
     position: relative;
   }
 
@@ -156,7 +156,7 @@
   }
 
   #text-panel {
-    flex: 1;
+    flex: 2;
     display: flex;
     flex-direction: column;
   }
@@ -489,10 +489,10 @@ function loadText(content) {
 // ── TICKER ─────────────────────────────────────────────────────
 function loadTicker(content) {
   var el = document.getElementById('ticker-text');
-  var itemSep = '                      ❖                      ';
-  var loopGap = '                                                                                  ❖                                                                                  ';
-  var raw = content && content.trim() ? content.trim().split('\n').join(itemSep) : 'Welcome to Maayan Midwest!';
-  el.textContent = raw + loopGap + raw;
+  var sep = '             ❖             ';
+  var raw = content && content.trim() ? content.trim().split('\n').join(sep) : 'Welcome to Maayan Midwest!';
+  var tile = raw + sep;
+  el.textContent = tile + tile;
   el.style.animation = 'none';
   void el.offsetWidth;
   var speed = Math.max(40, raw.length * 0.35);
