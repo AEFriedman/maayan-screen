@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maayan Midwest</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0d1033;
+    color: #fff;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  #header {
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    height: 80px;
+    flex-shrink: 0;
+    border-bottom: 4px solid #E8639A;
+  }
+
+  #header-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 260px;
+  }
+
+  #logo-img {
+    height: 58px;
+    width: 58px;
+    object-fit: contain;
+  }
+
+  #camp-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: #E8639A;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  #camp-name span {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #E8900A;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  #header-center {
+    text-align: center;
+    flex: 1;
+  }
+
+  #clock {
+    font-size: 48px;
+    font-weight: 700;
+    color: #1a1f4e;
+    letter-spacing: 3px;
+    line-height: 1;
+  }
+
+  #clock sup {
+    font-size: 18px;
+    font-weight: 400;
+    color: #888;
+    vertical-align: super;
+    letter-spacing: 1px;
+  }
+
+  #header-right {
+    text-align: right;
+    min-width: 260px;
+  }
+
+  #gregorian-date {
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  #hebrew-date {
+    font-size: 18px;
+    color: #E8639A;
+    font-weight: 700;
+    margin-top: 3px;
+    letter-spacing: 0.5px;
+  }
+
+  /* MAIN CONTENT */
+  #main {
+    display: flex;
+    flex: 1;
+    gap: 10px;
+    padding: 10px;
+    overflow: hidden;
+  }
+
+  /* LEFT COLUMN */
+  #left-col {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 35%;
+    flex-shrink: 0;
+  }
+
+  .panel {
+    background: #1a1f4e;
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #photo-panel {
+    flex: 1.2;
+    position: relative;
+  }
+
+  #photo-panel img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0; left: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  #photo-panel img.hidden {
+    opacity: 0;
+  }
+
+  #photo-panel .no-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: rgba(255,255,255,0.3);
+    font-size: 14px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  #text-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #text-panel-label {
+    background: #E8639A;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    flex-shrink: 0;
+  }
+
+  #text-panel-content b, #text-panel-content strong { font-weight: 700; }
+  #text-panel-content i, #text-panel-content em { font-style: italic; }
+  #text-panel-content u { text-decoration: underline; }
+  #text-panel-content p { margin: 0 0 8px 0; }
+  #text-panel-content h1, #text-panel-content h2, #text-panel-content h3 { margin: 4px 0; font-size: 1.2em; }
+
+  #text-panel-wrap {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #text-panel-content {
+    padding: 16px;
+    font-size: 18px;
+    line-height: 1.7;
+    color: #fff;
+    white-space: pre-wrap;
+    position: absolute;
+    width: 100%;
+    top: 0;
+  }
+
+  @keyframes scroll-up {
+    0%   { top: 0; }
+    100% { top: -var(--scroll-dist); }
+  }
+
+  /* RIGHT COLUMN - SLIDES */
+  #slides-panel {
+    flex: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #111;
+  }
+
+  #slides-panel iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+
+  #slides-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.3);
+    font-size: 16px;
+    text-align: center;
+    padding: 20px;
+  }
+
+  /* TICKER */
+  #ticker-bar {
+    background: #1a1a2e;
+    border-top: 2px solid #E8639A;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  #ticker-label {
+    background: #E8639A;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 0 14px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    font-size: 14px;
+  }
+
+  #ticker-track {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    height: 100%;
+  }
+
+  #ticker-text {
+    position: absolute;
+    white-space: nowrap;
+    font-size: 20px;
+    color: #fff;
+    line-height: 54px;
+    will-change: transform;
+  }
+
+  @keyframes ticker-scroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div id="header-left">
+    <img id="logo-img" src="https://campmaayan.com/wp-content/uploads/new-pink-white-background-2.png" alt="Maayan Midwest Logo">
+    <div id="camp-name">Maayan<span>Midwest</span></div>
+  </div>
+  <div id="header-center">
+    <div id="clock">12:00 <sup>AM</sup></div>
+  </div>
+  <div id="header-right">
+    <div id="gregorian-date"></div>
+    <div id="hebrew-date"></div>
+  </div>
+</div>
+
+<div id="main">
+  <div id="left-col">
+    <div class="panel" id="photo-panel">
+      <div class="no-content" id="photo-placeholder">Photos loading...</div>
+    </div>
+    <div class="panel" id="text-panel">
+      <div id="text-panel-label">✦ Announcements</div>
+      <div id="text-panel-wrap">
+        <div id="text-panel-content">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="slides-panel">
+    <div id="slides-placeholder">Schedule loading...</div>
+  </div>
+</div>
+
+<div id="ticker-bar">
+  <div id="ticker-label">✦ News</div>
+  <div id="ticker-track">
+    <div id="ticker-text">Welcome to Maayan Midwest!</div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION — paste your Apps Script /exec URL here
+// ============================================================
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc-OHsxxoDlxBnOR7lcexuy2qd7DQOrmN0gafg-UIzc-SI_LPLzKJ7iJGVQtz-OeuC/exec';
+// ============================================================
+
+// ── CLOCK & DATES ──────────────────────────────────────────────
+
+
+
+
+
+
+
+
+var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function updateClock() {
+  var now = new Date(new Date().toLocaleString('en-US', {timeZone: 'America/Chicago'}));
+  var h = now.getHours(), m = now.getMinutes();
+  var ampm = h >= 12 ? 'PM' : 'AM';
+  var h12 = h % 12 || 12;
+  var mStr = m < 10 ? '0'+m : ''+m;
+  document.getElementById('clock').innerHTML = h12 + ':' + mStr + ' <sup>' + ampm + '</sup>';
+  document.getElementById('gregorian-date').textContent = DAYS[now.getDay()] + ', ' + MONTHS[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+  // Hebrew date updated separately via Hebcal
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+// Hebrew date comes from server via getDisplayData()
+
+// ── SLIDES ─────────────────────────────────────────────────────
+function initSlides(url) {
+  var panel = document.getElementById('slides-panel');
+  if (!url || url.indexOf('PASTE') !== -1) {
+    panel.innerHTML = '<div id="slides-placeholder">Paste your Google Slides embed URL in Code.gs to show the schedule here.</div>';
+    return;
+  }
+  var iframe = document.createElement('iframe');
+  iframe.src = url;
+  iframe.allowFullscreen = true;
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.border = 'none';
+  iframe.style.display = 'block';
+  // If iframe errors, reload just the iframe not the whole page
+  iframe.onerror = function() {
+    setTimeout(function() {
+      iframe.src = url;
+    }, 5000);
+  };
+  panel.innerHTML = '';
+  panel.appendChild(iframe);
+
+  // Watchdog specifically for slides iframe - reload it if it goes blank
+  setInterval(function() {
+    try {
+      var doc = iframe.contentDocument || iframe.contentWindow.document;
+      if (!doc || doc.body === null || doc.body.innerHTML === '') {
+        iframe.src = url;
+      }
+    } catch(e) {
+      // Cross-origin block expected — iframe is sandboxed, page is safe
+    }
+  }, 15000);
+}
+
+// ── PHOTOS ─────────────────────────────────────────────────────
+var photoImages = [];
+var photoIndex = 0;
+var imgA = null, imgB = null, showingA = true;
+
+function initPhotoPanel() {
+  var panel = document.getElementById('photo-panel');
+  panel.innerHTML = '';
+  imgA = document.createElement('img');
+  imgB = document.createElement('img');
+  imgA.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;transition:opacity 1s ease;';
+  imgB.style.cssText = imgA.style.cssText + 'opacity:0;';
+  panel.appendChild(imgA);
+  panel.appendChild(imgB);
+}
+
+function showNextPhoto() {
+  if (!photoImages.length) return;
+  var url = photoImages[photoIndex % photoImages.length].url;
+  photoIndex++;
+  var next = showingA ? imgB : imgA;
+  var curr = showingA ? imgA : imgB;
+  next.src = url;
+  next.onload = function() {
+    next.style.opacity = '1';
+    curr.style.opacity = '0';
+    showingA = !showingA;
+  };
+}
+
+function loadPhotos(images) {
+  if (!images || !images.length) {
+    document.getElementById('photo-panel').innerHTML = '<div class="no-content" style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(255,255,255,0.3);font-size:14px;padding:20px;text-align:center;">Add photos to your Drive folder to show them here.</div>';
+    return;
+  }
+  if (!imgA) initPhotoPanel();
+  photoImages = images;
+  showNextPhoto();
+}
+
+// ── TEXT CONTENT ───────────────────────────────────────────────
+function loadText(content) {
+  var el = document.getElementById('text-panel-content');
+  var wrap = document.getElementById('text-panel-wrap');
+  var text = content && content.trim() ? content.trim() : 'No content yet — update the Google Doc!';
+  el.textContent = text;
+  el.style.animation = 'none';
+  el.style.top = '0';
+  el.style.fontSize = '18px';
+
+  setTimeout(function() {
+    var wrapH = wrap.offsetHeight;
+    var wrapW = wrap.offsetWidth;
+
+    // Auto-size: grow font until it fills ~80% of height or hits max
+    var fontSize = 18;
+    var maxSize = 72;
+    el.style.fontSize = fontSize + 'px';
+    while (fontSize < maxSize) {
+      fontSize += 2;
+      el.style.fontSize = fontSize + 'px';
+      if (el.offsetHeight > wrapH * 0.85) {
+        fontSize -= 2;
+        el.style.fontSize = fontSize + 'px';
+        break;
+      }
+    }
+
+    var contentH = el.offsetHeight;
+    if (contentH <= wrapH) {
+      // Fits — center it vertically
+      el.style.top = Math.max(0, (wrapH - contentH) / 2) + 'px';
+      return;
+    }
+    // Need to scroll
+    var overflowPx = contentH - wrapH + 32;
+    var speed = Math.max(8, overflowPx / 40);
+    var totalTime = speed + 6;
+    var pausePct = (3 / totalTime * 100).toFixed(1);
+    var scrollEndPct = ((speed + 3) / totalTime * 100).toFixed(1);
+    var styleId = 'scroll-style';
+    var oldEl = document.getElementById(styleId);
+    if (oldEl) oldEl.remove();
+    var style = document.createElement('style');
+    style.id = styleId;
+    style.textContent = '@keyframes scroll-up { 0% { top: 0; } ' + pausePct + '% { top: 0; } ' + scrollEndPct + '% { top: -' + overflowPx + 'px; } 100% { top: -' + overflowPx + 'px; } }';
+    document.head.appendChild(style);
+    el.style.animation = 'scroll-up ' + totalTime + 's ease-in-out infinite';
+  }, 300);
+}
+
+// ── TICKER ─────────────────────────────────────────────────────
+function loadTicker(content) {
+  var el = document.getElementById('ticker-text');
+  var itemSep = '                      ❖                      ';
+  var loopGap = '                                                                                  ❖                                                                                  ';
+  var raw = content && content.trim() ? content.trim().split('\n').join(itemSep) : 'Welcome to Maayan Midwest!';
+  el.textContent = raw + loopGap + raw;
+  el.style.animation = 'none';
+  void el.offsetWidth;
+  var speed = Math.max(40, raw.length * 0.35);
+  el.style.animation = 'ticker-scroll ' + speed + 's linear infinite';
+}
+
+// ── DATA REFRESH ───────────────────────────────────────────────
+// Track consecutive fetch failures for visible error state
+var fetchFailCount = 0;
+
+function showFetchError(msg) {
+  var el = document.getElementById('text-panel-content');
+  el.style.fontSize = '22px';
+  el.style.animation = 'none';
+  el.style.top = '16px';
+  el.textContent = '⚠ Display error: ' + msg + ' — Please reload the page or contact support.';
+}
+
+function handleData(data) {
+  fetchFailCount = 0;
+  if (data.slidesEmbedUrl && document.getElementById('slides-panel').querySelector('iframe') === null) {
+    initSlides(data.slidesEmbedUrl);
+  }
+  loadPhotos(data.images);
+  loadText(data.textContent);
+  loadTicker(data.tickerContent);
+  if (data.hebrewDate) {
+    document.getElementById('hebrew-date').textContent = data.hebrewDate;
+  }
+}
+
+function refreshViaJsonp() {
+  // JSONP fallback: inject a script tag with ?callback=
+  var callbackName = 'jsonpCallback_' + Date.now();
+  var script = document.createElement('script');
+  var timeout = setTimeout(function() {
+    fetchFailCount++;
+    delete window[callbackName];
+    document.head.removeChild(script);
+    if (fetchFailCount >= 3) {
+      showFetchError('JSONP fallback also failed after ' + fetchFailCount + ' attempts.');
+    }
+  }, 10000);
+
+  window[callbackName] = function(data) {
+    clearTimeout(timeout);
+    delete window[callbackName];
+    document.head.removeChild(script);
+    handleData(data);
+  };
+
+  script.src = APPS_SCRIPT_URL + '?callback=' + callbackName;
+  document.head.appendChild(script);
+}
+
+function refresh() {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf('PASTE') !== -1) {
+    showFetchError('Apps Script URL not configured — paste your /exec URL into index.html');
+    return;
+  }
+  fetch(APPS_SCRIPT_URL)
+    .then(function(r) {
+      var ct = r.headers.get('content-type') || '';
+      if (!r.ok || ct.indexOf('html') !== -1) {
+        // Got HTML back — likely a login redirect, try JSONP
+        throw new Error('Got non-JSON response (possibly login redirect)');
+      }
+      return r.json();
+    })
+    .then(function(data) {
+      handleData(data);
+    })
+    .catch(function(err) {
+      console.warn('fetch() failed, trying JSONP:', err.message);
+      refreshViaJsonp();
+    });
+}
+
+// ── PHOTO ROTATION TIMER ───────────────────────────────────────
+setInterval(function() {
+  if (photoImages.length > 1) showNextPhoto();
+}, 8000);
+
+// ── CONTENT REFRESH TIMER (every 3 min) ───────────────────────
+setInterval(function() {
+  refresh();
+}, 3 * 60 * 1000);
+
+// ── WATCHDOG — if page goes white, reload ──────────────────────
+var lastClockUpdate = Date.now();
+setInterval(function() {
+  var clock = document.getElementById('clock');
+  var header = document.getElementById('header');
+  if (!clock || !header || header.offsetHeight === 0) {
+    window.location.reload();
+    return;
+  }
+  // Track last time clock updated
+  if (clock._lastText !== clock.innerText) {
+    clock._lastText = clock.innerText;
+    lastClockUpdate = Date.now();
+  }
+  // If clock hasn't updated in 10 seconds, page is frozen
+  if (Date.now() - lastClockUpdate > 10000) {
+    window.location.reload();
+  }
+}, 10 * 1000);
+
+// ── INIT ───────────────────────────────────────────────────────
+window.onload = function() {
+  document.getElementById('text-panel-content').textContent = 'Connecting...';
+  refresh();
+};
+</script>
+</body>
+</html>
