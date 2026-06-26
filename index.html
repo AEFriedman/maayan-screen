@@ -327,6 +327,7 @@ var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc-OHsxxoDlxBnOR
 // ============================================================
 
 var currentData = { textContent: null, tickerContent: null, hebrewDate: null, images: null, slidesEmbedUrl: null };
+var lastTick = Date.now();
 
 // ── CLOCK & DATES ──────────────────────────────────────────────
 
@@ -341,6 +342,7 @@ var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturda
 var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
 function updateClock() {
+  lastTick = Date.now();
   var now = new Date(new Date().toLocaleString('en-US', {timeZone: 'America/Chicago'}));
   var h = now.getHours(), m = now.getMinutes();
   var ampm = h >= 12 ? 'PM' : 'AM';
@@ -597,21 +599,13 @@ setInterval(function() {
 }, 3 * 60 * 1000);
 
 // ── WATCHDOG — if page goes white, reload ──────────────────────
-var lastClockUpdate = Date.now();
 setInterval(function() {
-  var clock = document.getElementById('clock');
   var header = document.getElementById('header');
-  if (!clock || !header || header.offsetHeight === 0) {
+  if (!header || header.offsetHeight === 0) {
     window.location.reload();
     return;
   }
-  // Track last time clock updated
-  if (clock._lastText !== clock.innerText) {
-    clock._lastText = clock.innerText;
-    lastClockUpdate = Date.now();
-  }
-  // If clock hasn't updated in 10 seconds, page is frozen
-  if (Date.now() - lastClockUpdate > 90000) {
+  if (Date.now() - lastTick > 15000) {
     window.location.reload();
   }
 }, 10 * 1000);
