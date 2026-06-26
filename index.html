@@ -326,6 +326,8 @@
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc-OHsxxoDlxBnOR7lcexuy2qd7DQOrmN0gafg-UIzc-SI_LPLzKJ7iJGVQtz-OeuC/exec';
 // ============================================================
 
+var currentData = { textContent: null, tickerContent: null, hebrewDate: null, images: null, slidesEmbedUrl: null };
+
 // ── CLOCK & DATES ──────────────────────────────────────────────
 
 
@@ -505,18 +507,35 @@ function showFetchError(msg) {
   el.style.animation = 'none';
   el.style.top = '16px';
   el.textContent = '⚠ Display error: ' + msg + ' — Please reload the page or contact support.';
+  currentData.textContent = null;
 }
 
 function handleData(data) {
   fetchFailCount = 0;
+
+  if (data.textContent !== currentData.textContent) {
+    loadText(data.textContent);
+    currentData.textContent = data.textContent;
+  }
+
+  if (data.tickerContent !== currentData.tickerContent) {
+    loadTicker(data.tickerContent);
+    currentData.tickerContent = data.tickerContent;
+  }
+
+  if (data.hebrewDate && data.hebrewDate !== currentData.hebrewDate) {
+    document.getElementById('hebrew-date').textContent = data.hebrewDate;
+    currentData.hebrewDate = data.hebrewDate;
+  }
+
+  if (JSON.stringify(data.images) !== JSON.stringify(currentData.images)) {
+    loadPhotos(data.images);
+    currentData.images = data.images;
+  }
+
   if (data.slidesEmbedUrl && document.getElementById('slides-panel').querySelector('iframe') === null) {
     initSlides(data.slidesEmbedUrl);
-  }
-  loadPhotos(data.images);
-  loadText(data.textContent);
-  loadTicker(data.tickerContent);
-  if (data.hebrewDate) {
-    document.getElementById('hebrew-date').textContent = data.hebrewDate;
+    currentData.slidesEmbedUrl = data.slidesEmbedUrl;
   }
 }
 
