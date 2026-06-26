@@ -210,10 +210,10 @@
 
   #slides-panel iframe {
     width: 100%;
-    height: calc(100% + 45px);
+    height: calc(100% + 60px);
     border: none;
     display: block;
-    margin-bottom: -45px;
+    margin-bottom: -60px;
   }
 
   #slides-placeholder {
@@ -365,7 +365,8 @@ function initSlides(url) {
   iframe.src = url;
   iframe.allowFullscreen = true;
   iframe.style.width = '100%';
-  iframe.style.height = '100%';
+  iframe.style.height = 'calc(100% + 60px)';
+  iframe.style.marginBottom = '-60px';
   iframe.style.border = 'none';
   iframe.style.display = 'block';
   // If iframe errors, reload just the iframe not the whole page
