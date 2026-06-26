@@ -611,7 +611,7 @@ setInterval(function() {
     lastClockUpdate = Date.now();
   }
   // If clock hasn't updated in 10 seconds, page is frozen
-  if (Date.now() - lastClockUpdate > 10000) {
+  if (Date.now() - lastClockUpdate > 90000) {
     window.location.reload();
   }
 }, 10 * 1000);
