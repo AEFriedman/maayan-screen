@@ -598,6 +598,14 @@ setInterval(function() {
   refresh();
 }, 3 * 60 * 1000);
 
+// ── SLIDES REFRESH (every 30 min) ────────────────────────────
+setInterval(function() {
+  var iframe = document.getElementById('slides-panel').querySelector('iframe');
+  if (iframe) {
+    iframe.src = iframe.src.split('&_cb=')[0] + '&_cb=' + Date.now();
+  }
+}, 30 * 60 * 1000);
+
 // ── WATCHDOG — if page goes white, reload ──────────────────────
 setInterval(function() {
   var header = document.getElementById('header');
