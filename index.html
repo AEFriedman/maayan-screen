@@ -326,7 +326,7 @@
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc-OHsxxoDlxBnOR7lcexuy2qd7DQOrmN0gafg-UIzc-SI_LPLzKJ7iJGVQtz-OeuC/exec';
 // ============================================================
 
-var currentData = { textContent: null, tickerContent: null, hebrewDate: null, images: null, slidesEmbedUrl: null };
+var currentData = { textContent: null, tickerContent: null, hebrewDate: null, images: null, slidesEmbedUrl: null, slidesModified: null, slidesReloadUntil: 0 };
 var lastTick = Date.now();
 
 // ── CLOCK & DATES ──────────────────────────────────────────────
@@ -539,6 +539,21 @@ function handleData(data) {
     initSlides(data.slidesEmbedUrl);
     currentData.slidesEmbedUrl = data.slidesEmbedUrl;
   }
+
+  // Slides change detection — reload at detection, +3, +6, +9 min
+  if (data.slidesModified && data.slidesModified !== currentData.slidesModified) {
+    if (currentData.slidesModified !== null) {
+      // Prior value existed — open a 9-minute reload window
+      currentData.slidesReloadUntil = Date.now() + (9 * 60 * 1000);
+    }
+    currentData.slidesModified = data.slidesModified;
+  }
+  if (currentData.slidesReloadUntil && Date.now() <= currentData.slidesReloadUntil) {
+    var slideIframe = document.getElementById('slides-panel').querySelector('iframe');
+    if (slideIframe) {
+      slideIframe.src = slideIframe.src.split('&_cb=')[0] + '&_cb=' + Date.now();
+    }
+  }
 }
 
 function refreshViaJsonp() {
@@ -597,14 +612,6 @@ setInterval(function() {
 setInterval(function() {
   refresh();
 }, 3 * 60 * 1000);
-
-// ── SLIDES REFRESH (every 30 min) ────────────────────────────
-setInterval(function() {
-  var iframe = document.getElementById('slides-panel').querySelector('iframe');
-  if (iframe) {
-    iframe.src = iframe.src.split('&_cb=')[0] + '&_cb=' + Date.now();
-  }
-}, 30 * 60 * 1000);
 
 // ── WATCHDOG — if page goes white, reload ──────────────────────
 setInterval(function() {
